@@ -14,18 +14,16 @@ const getContacts = () => {
 
 function App() {
   const [contacts, setContacts] = useState(getContacts)
-  const [filtredContacts, setFiltredContacts] = useState(contacts)
+  const [searchQuery, setSearchQuery] = useState("")
 
   useEffect(() => {
     localStorage.setItem("contacts", JSON.stringify(contacts))
-    setFiltredContacts(contacts)
   }, [contacts])
 
-  const handlerFilter = (e) => {
-    const query = e.target.value.toLowerCase();
-    const filtred = contacts.filter(c => c.name.toLowerCase().includes(query))
-    setFiltredContacts(filtred)
-  }
+  // Контакти, що відповідають пошуку
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(searchQuery)
+  );
 
   const handlerDeleteContact = (id) => {
     const result = contacts.filter(c => c.id != id)
@@ -41,8 +39,8 @@ function App() {
     <>
       <h1>Phonebook</h1>
       <ContactForm handleSubmit={handleSubmit} />
-      <SearchBox handlerFilter={handlerFilter} />
-      <ContactList contacts={filtredContacts} handlerDeleteContact={handlerDeleteContact} />
+      <SearchBox handlerFilter={(e) => setSearchQuery(e.target.value.toLowerCase())} />
+      <ContactList contacts={filteredContacts} handlerDeleteContact={handlerDeleteContact} />
     </>
   )
 }
